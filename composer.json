@@ -1,0 +1,19 @@
+{
+    "name": "makcent/alibabasdk",
+    "description": "this is 1688 api sdk",
+    "type": "project",
+    "authors": [
+        {
+            "name": "久居你心",
+            "email": "712042812@qq.com"
+        }
+    ],
+    "require": {
+        "php": "^5.3.3"
+    },
+    "autoload":{
+        "psr-4":{
+            "makcent\\AlibabaSDK\\":"src"
+        }
+    }
+}
