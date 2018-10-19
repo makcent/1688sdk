@@ -3,9 +3,9 @@ namespace makcent\AlibabaSDK;
 
 class SDK
 {
-	public static $mapping = array();
+	public static $classMap = array();
 
-	public $apiKey = array(
+	public static $router = array(
 		'com.logistics' => '/com/alibaba/logistics/param/',
 		'com.product' => '/com/alibaba/product/param/',
 		'com.trade' => '/com/alibaba/trade/param/',
@@ -13,11 +13,14 @@ class SDK
 	);
 
 
-	public static function schema()
+	public static function schema($routers = array())
 	{
-		$instance = new self();
+		if (!empty($routers)) {
+			self::$router = array_merge(self::$router, $routers);
+		}
+
 		$apis = '';
-		foreach ($instance->apiKey as $namespace => $val) {
+		foreach (self::$router as $namespace => $val) {
 			$list = scandir(__DIR__.$val);
 			foreach ($list as $filename) {
 				if (!in_array($filename, array('.', '..'))) {
@@ -26,20 +29,13 @@ class SDK
 			}
 		}
 
-		$context = <<<EOL
-		<?php
-		return array(
-			{$apis}
-		);
-		?>
-EOL;
-
+		$context = "<?php return array({$apis}); ?>";
 		return file_put_contents(__DIR__.'\helper.php', $context);
 	}
 
 	public static function getSdk($api)
 	{
-		if (!isset(self::$mapping[$api])) {
+		if (!isset(self::$classMap[$api])) {
 			$json = include_once (__DIR__.'\helper.php');
 			if (!isset($json[$api])) {
 				return false;
@@ -48,7 +44,7 @@ EOL;
 			$className = explode('.', $api);
 			return new $className[count($className)-1];
 		}
-		return self::$mapping[$api];
+		return self::$classMap[$api];
 	}
 }
 
