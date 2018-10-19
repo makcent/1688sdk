@@ -33,7 +33,7 @@ class SDK
 		return file_put_contents(__DIR__.'\helper.php', $context);
 	}
 
-	public static function getSdk($api)
+	public static function getSdk($api,$params = array())
 	{
 		if (!isset(self::$classMap[$api])) {
 			$json = include_once (__DIR__.'\helper.php');
@@ -42,7 +42,7 @@ class SDK
 			}
 			include_once __DIR__.$json[$api];
 			$className = explode('.', $api);
-			return new $className[count($className)-1];
+			return $params ? new $className[count($className)-1]($params) : new $className[count($className)-1];
 		}
 		return self::$classMap[$api];
 	}
